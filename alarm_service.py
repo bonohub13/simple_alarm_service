@@ -3,6 +3,7 @@ import configparser
 from random import randint
 from datetime import datetime
 from os import system, path
+import sys
 
 class ReadConfig:
     def __init__(self):
@@ -28,6 +29,7 @@ class Alarm:
         self.songs = self.config.get_default()["Songs"].split("\n")
         self.target_day = self.config.get_default()["DayOfWeek"].split("\n")
         self.target_time = ":".join(self.config.get_default()["Time"].split("\n"))
+        retval = 0
 
     def run(self):
         now = datetime.now().strftime("%H:%M:%S")
@@ -35,8 +37,14 @@ class Alarm:
         song = self.songs[randint(0, len(self.songs))] if len(self.songs) > 1 else self.songs[0]
 
         if today in self.target_day and now == self.target_time:
-            system(f"{self.config.get_paths()['src_dir']}/alarm.sh '{song}' '{self.msg}'")
+            retval = system(f"{self.config.get_paths()['src_dir']}/alarm.sh '{song}' '{self.msg}'")
+
+        return retval
 
 if __name__ == "__main__":
     alarm = Alarm()
-    alarm.run()
+    while True:
+        retval = alarm.run()
+        if retval != 0:
+            sys.exit(retval)
+            break;
