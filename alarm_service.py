@@ -2,6 +2,7 @@
 import configparser
 from random import randint
 from datetime import datetime
+from time import sleep
 from os import system, path
 import sys
 
@@ -45,6 +46,7 @@ if __name__ == "__main__":
     alarm = Alarm()
     while True:
         retval = alarm.run()
+        sleep(1.0)
         if retval != 0:
             sys.exit(retval)
             break;
