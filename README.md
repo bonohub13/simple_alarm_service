@@ -13,11 +13,7 @@ echo "$PATH" | grep "$HOME/.local/bin" || echo "export PATH=$HOME/.local/bin" >>
 ```
 cd ~/.config/alarm && ./init_setup.sh
 ```
-4. Copy files to appropriate places.
-```
-cp ~/.config/alarm/alarm_service.py ~/.local/bin
-```
-5. To enable and start the service, run the following command.
+4. To enable and start the service, run the following command.
 ```
 systemctl --user enable --now alarm.service
 ```
