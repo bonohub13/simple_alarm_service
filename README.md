@@ -3,7 +3,7 @@
 ## Instructions
 1. Clone this repository under $HOME/.local/bin
 ```
-mkdir -p ~/.local/bin && git clone https://github.com/bonohub13/simple_alarm_service ~/.local/bin/alarm
+mkdir -p ~/.local/bin ~/.config ~/.config/systemd/user && git clone https://github.com/bonohub13/simple_alarm_service ~/.config/alarm
 ```
 2. Add ~/.local/bin to $PATH
 ```
@@ -11,9 +11,13 @@ echo "$PATH" | grep "$HOME/.local/bin" || echo "export PATH=$HOME/.local/bin" >>
 ```
 3. Run the ```init_setup.sh``` under alarm
 ```
-cd ~/.local/bin/alarm && ./init_setup.sh
+cd ~/.config/alarm && ./init_setup.sh
 ```
-4. To enable and start the service, run the following command.
+4. Copy files to appropriate places.
+```
+cp ~/.config/alarm/alarm_service.py ~/.local/bin
+```
+5. To enable and start the service, run the following command.
 ```
 systemctl --user enable --now alarm.service
 ```
