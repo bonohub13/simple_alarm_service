@@ -8,7 +8,7 @@ import sys
 
 class ReadConfig:
     def __init__(self):
-        config_file = f"{path.dirname(path.abspath(__file__))}/alarm.conf"
+        config_file = f"homedir/.config/alarm.conf"
         # DEFAULT and COMMON is in config
         self.config = configparser.ConfigParser(
                 interpolation=configparser.ExtendedInterpolation(),
@@ -26,27 +26,35 @@ class ReadConfig:
 class Alarm:
     def __init__(self):
         self.config = ReadConfig()
+        self.update_values()
+
+    def update_values(self):
         self.msg = self.config.get_default()["Message"]
         self.songs = self.config.get_default()["Songs"].split("\n")
         self.target_day = self.config.get_default()["DayOfWeek"].split("\n")
         self.target_time = ":".join(self.config.get_default()["Time"].split("\n"))
-        retval = 0
+        self.retval = 0
+        self.now = datetime.now().strftime("%H:%M:%S")
+        self.today = datetime.today().strftime("%A")
+        self.song = self.songs[randint(0, len(self.songs))] if len(self.songs) > 1 else self.songs[0]
 
     def run(self):
-        now = datetime.now().strftime("%H:%M:%S")
-        today = datetime.today().strftime("%A")
-        song = self.songs[randint(0, len(self.songs))] if len(self.songs) > 1 else self.songs[0]
+        try:
+            while True:
+                self.update_values()
 
-        if today in self.target_day and now == self.target_time:
-            retval = system(f"{self.config.get_paths()['src_dir']}/alarm.sh '{song}' '{self.msg}'")
+                if self.today in self.target_day \
+                        and self.now == self.target_time:
+                    self.retval = system(f"{self.config.get_paths()['src_dir']}/alarm.sh '{self.song}' '{self.msg}'")
+                if self.retval != 0:
+                    break
 
-        return retval
+                sleep(1.0)
+        except KeyboardInterrupt:
+            sys.exit(-1)
+
+        sys.exit(self.retval)
 
 if __name__ == "__main__":
     alarm = Alarm()
-    while True:
-        retval = alarm.run()
-        sleep(1.0)
-        if retval != 0:
-            sys.exit(retval)
-            break;
+    alarm.run()
