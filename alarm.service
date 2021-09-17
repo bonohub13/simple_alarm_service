@@ -1,13 +1,14 @@
 [Unit]
 Description=Alarm to wake me up with a song
 StartLimitIntervalSec=1
+After=multi-user.target
 
 [Service]
 Type=simple
 Environment=PATH=path
-Restart=always
+Restart=on-failure
 RestartSec=1
-ExecStart=homedir/.local/bin/alarm/alarm_service.py
+ExecStart=homedir/.local/bin/alarm_service.py
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
