@@ -11,16 +11,17 @@ alarm() {
 
 ALARM_RUNNING=0
 ps aux | grep "pacat" | while read line; do
-    [ "$#" -gt 0 ] && echo "$line" | awk '{for (i=11;i < NF;i++) {printf "%s", $i} print ""}' | grep "pacat --file-format=flac $1" && ALARM_RUNNING=1
+    [ "$#" -gt 0 ] \
+        && echo "$line" | awk '{for (i=11;i < NF;i++) {printf "%s", $i} print ""}' | grep "pacat --file-format="$(file "$1" | awk -F: '{print $2}' | awk '{print $1}' | tr "[:upper:]" "[:lower:]")" $1" \
+        && ALARM_RUNNING=1 \
+        || ALARM_RUNNING=0
 done
 
 if [ "$#" -eq 1 ] && [ "$ALARM_RUNNING" -eq 0 ];then
     alarm "$1" 'WAKE UP! Time for work!'
-    sleep 1
     return 0
 elif [ "$#" -eq 2 ] && [ "$ALARM_RUNNING" -eq 0 ]; then
     alarm "$1" "$2"
-    sleep 1
     return 0
 else ([ "$#" -eq 0 ] || [ "$#" -gt 2 ]) && [ "$ALARM_RUNNING" -eq 0 ]
     echo "Error: Invalid number of arguments"
