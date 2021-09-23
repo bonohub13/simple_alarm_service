@@ -8,7 +8,7 @@ import sys
 
 class ReadConfig:
     def __init__(self):
-        config_file = f"homedir/.config/alarm.conf"
+        config_file = f"homedir/.config/alarm/alarm.conf"
         # DEFAULT and COMMON is in config
         self.config = configparser.ConfigParser(
                 interpolation=configparser.ExtendedInterpolation(),
